@@ -1067,6 +1067,3 @@ applyFilters();
 </script>
 </body>
 </html>
-
-$test = new IndexTest();
-$test->runTests();
