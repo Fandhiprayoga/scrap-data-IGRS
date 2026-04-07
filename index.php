@@ -1034,9 +1034,32 @@ function filterByRating(r) {
     publishers.add(g.publisher);
     getPlatforms(g).forEach(p => platforms.add(p));
   });
-  document.getElementById('totalGames').textContent     = GAMES.length;
-  document.getElementById('totalPublishers').textContent = publishers.size;
-  document.getElementById('totalPlatforms').textContent  = platforms.size;
+
+  function countUp(el, target, duration) {
+    const start     = performance.now();
+    const formatter = new Intl.NumberFormat('id-ID');
+    function tick(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      el.textContent = formatter.format(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      countUp(document.getElementById('totalGames'),      GAMES.length,      1400);
+      countUp(document.getElementById('totalPublishers'), publishers.size,   1200);
+      countUp(document.getElementById('totalPlatforms'),  platforms.size,    1000);
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(document.querySelector('.hero-stats'));
 })();
 
 // Initial render
