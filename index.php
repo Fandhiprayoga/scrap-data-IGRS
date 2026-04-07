@@ -813,7 +813,7 @@ $gamesJson = json_encode($games, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG);
 <div id="games" class="filter-bar">
   <div class="search-wrap">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input class="search-input" id="searchInput" type="search" placeholder="Cari judul atau publisher…" oninput="applyFilters()">
+    <input class="search-input" id="searchInput" type="search" placeholder="Cari judul atau publisher…" oninput="debouncedFilter()">
   </div>
 
   <select class="select-filter" id="ratingFilter" onchange="syncRatingGuide(); applyFilters()">
@@ -849,6 +849,9 @@ $gamesJson = json_encode($games, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG);
 
 <!-- GAME GRID -->
 <div class="game-grid" id="gameGrid"></div>
+<div style="text-align:center;padding:1rem 0 3rem">
+  <button class="btn btn-ghost" id="loadMoreBtn" onclick="loadMore()" style="display:none;padding:.6rem 2rem;font-size:.85rem">Muat Lebih Banyak</button>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -901,13 +904,13 @@ function buildCard(game) {
 
   const descHtml = descs.map(d => {
     const img = DESCRIPTOR_IMG[d]
-      ? `<img src="${DESCRIPTOR_IMG[d]}" alt="">`
+      ? `<img src="${DESCRIPTOR_IMG[d]}" alt="" loading="lazy">`
       : '';
     return `<span class="desc-tag">${img}${escHtml(d)}</span>`;
   }).join('');
 
   const ratingHtml = RATING_IMG[rl]
-    ? `<img class="rating-badge" src="${RATING_IMG[rl]}" alt="${escHtml(rl)}" title="Rating ${escHtml(rl)}">`
+    ? `<img class="rating-badge" src="${RATING_IMG[rl]}" alt="${escHtml(rl)}" title="Rating ${escHtml(rl)}" loading="lazy">`
     : (rl ? `<span class="rating-badge-fallback rating-na">${escHtml(rl)}</span>` : '');
 
   return `
@@ -934,15 +937,18 @@ function escHtml(s) {
     .replace(/"/g,'&quot;');
 }
 
+const PAGE_SIZE = 24;
+let currentPage     = 0;
+let currentFiltered = [];
+
 function applyFilters() {
   const search     = document.getElementById('searchInput').value.toLowerCase();
   const rating     = document.getElementById('ratingFilter').value;
   const platform   = document.getElementById('platformFilter').value;
   const descriptor = document.getElementById('descriptorFilter').value;
   const year       = document.getElementById('yearFilter').value;
-  const grid       = document.getElementById('gameGrid');
 
-  const filtered = GAMES.filter(g => {
+  currentFiltered = GAMES.filter(g => {
     if (rating && g.rating !== rating) return false;
     if (year && String(g.release_year) !== year) return false;
     if (platform && !getPlatforms(g).some(p => p.toLowerCase() === platform.toLowerCase())) return false;
@@ -957,10 +963,21 @@ function applyFilters() {
     return true;
   });
 
-  document.getElementById('filterCount').textContent =
-    `${filtered.length} game ditemukan`;
+  currentPage = 0;
+  document.getElementById('gameGrid').innerHTML = '';
+  renderPage();
+}
 
-  if (filtered.length === 0) {
+function renderPage() {
+  const grid  = document.getElementById('gameGrid');
+  const btn   = document.getElementById('loadMoreBtn');
+  const start = currentPage * PAGE_SIZE;
+  const slice = currentFiltered.slice(start, start + PAGE_SIZE);
+
+  document.getElementById('filterCount').textContent =
+    `${currentFiltered.length} game ditemukan`;
+
+  if (currentFiltered.length === 0) {
     grid.innerHTML = `
       <div class="empty-state">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -969,10 +986,29 @@ function applyFilters() {
         </svg>
         <p>Tidak ada game yang cocok dengan filter yang dipilih.</p>
       </div>`;
+    btn.style.display = 'none';
     return;
   }
 
-  grid.innerHTML = filtered.map(buildCard).join('');
+  grid.insertAdjacentHTML('beforeend', slice.map(buildCard).join(''));
+  currentPage++;
+
+  const shown = currentPage * PAGE_SIZE;
+  btn.style.display = shown < currentFiltered.length ? 'inline-flex' : 'none';
+  if (shown < currentFiltered.length) {
+    btn.textContent = `Muat Lebih Banyak (${currentFiltered.length - shown} tersisa)`;
+  }
+}
+
+function loadMore() {
+  renderPage();
+}
+
+// Debounce helper
+let _debounceTimer;
+function debouncedFilter() {
+  clearTimeout(_debounceTimer);
+  _debounceTimer = setTimeout(applyFilters, 250);
 }
 
 function syncRatingGuide() {
