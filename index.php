@@ -476,6 +476,292 @@ $gamesJson = json_encode($games, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG);
   .empty-state svg { opacity: .3; margin-bottom: 1rem; }
   .empty-state p { font-size: 1rem; }
 
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .22s ease, visibility .22s ease;
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(16px) scale(.98);
+    transition: transform .22s ease;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .75rem;
+    z-index: 1;
+  }
+
+  .modal-title { font-size: 1.05rem; font-weight: 800; color: var(--text); line-height: 1.3; }
+
+  .modal-close {
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    line-height: 1;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--text); }
+
+  .modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 1.1rem; }
+
+  .modal-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+
+  .modal-rating-img { height: 72px; width: auto; object-fit: contain; flex-shrink: 0; }
+
+  .modal-rating-info .rating-label {
+    font-size: .7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    margin-bottom: .2rem;
+  }
+  .modal-rating-info .rating-value { font-size: 1rem; font-weight: 800; color: var(--text); }
+
+  .modal-section-label {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: .45rem;
+  }
+
+  .modal-about { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+
+  .modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
+
+  .modal-meta-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .65rem .85rem;
+  }
+  .modal-meta-item .m-label { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .25rem; }
+  .modal-meta-item .m-value { font-size: .82rem; color: var(--text); font-weight: 600; }
+
+  .modal-descriptor-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+  .modal-id { font-size: .7rem; color: var(--border); text-align: right; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .22s ease, visibility .22s ease;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(16px) scale(.98);
+    transition: transform .22s ease;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .modal-overlay.open .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .75rem;
+    z-index: 1;
+  }
+
+  .modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .modal-close {
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+    line-height: 1;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--text); }
+
+  .modal-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .modal-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+
+  .modal-rating-img {
+    height: 72px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .modal-rating-info .rating-label {
+    font-size: .72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .2rem;
+  }
+
+  .modal-rating-info .rating-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .modal-section-label {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: .4rem;
+  }
+
+  .modal-about {
+    font-size: .85rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .modal-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .65rem;
+  }
+
+  .modal-meta-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .65rem .85rem;
+  }
+
+  .modal-meta-item .m-label {
+    font-size: .65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .25rem;
+  }
+
+  .modal-meta-item .m-value {
+    font-size: .82rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .modal-descriptor-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+  }
+
+  .modal-id {
+    font-size: .72rem;
+    color: var(--border);
+    text-align: right;
+    margin-top: .25rem;
+  }
+
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
@@ -858,6 +1144,17 @@ $gamesJson = json_encode($games, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG);
   <p>© <?= date('Y') ?> IGRS — Indonesian Game Rating System &nbsp;·&nbsp; <a href="#">igrs.id</a></p>
 </footer>
 
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)" role="dialog" aria-modal="true" aria-labelledby="modalGameTitle">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <span class="modal-title" id="modalGameTitle"></span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
 <script>
 const GAMES = <?= $gamesJson ?>;
 
@@ -914,7 +1211,7 @@ function buildCard(game) {
     : (rl ? `<span class="rating-badge-fallback rating-na">${escHtml(rl)}</span>` : '');
 
   return `
-    <div class="game-card">
+    <div class="game-card" onclick="openModal(${game.id})" style="cursor:pointer">
       <div class="card-header">
         <span class="card-title">${escHtml(game.title)}</span>
         ${ratingHtml}
@@ -1010,6 +1307,86 @@ function debouncedFilter() {
   clearTimeout(_debounceTimer);
   _debounceTimer = setTimeout(applyFilters, 250);
 }
+
+// ── GAME DETAIL MODAL ──
+const GAME_MAP = Object.fromEntries(GAMES.map(g => [g.id, g]));
+
+function openModal(id) {
+  const game = GAME_MAP[id];
+  if (!game) return;
+
+  const rl        = game.rating || '';
+  const platforms = getPlatforms(game);
+  const descs     = (game.descriptor || '').split(',').map(d => d.trim()).filter(Boolean);
+
+  const ratingImgHtml = RATING_IMG[rl]
+    ? `<img class="modal-rating-img" src="${RATING_IMG[rl]}" alt="${escHtml(rl)}">` : '';
+
+  const descHtml = descs.length
+    ? descs.map(d => {
+        const img = DESCRIPTOR_IMG[d] ? `<img src="${DESCRIPTOR_IMG[d]}" alt="" loading="lazy">` : '';
+        return `<span class="desc-tag">${img}${escHtml(d)}</span>`;
+      }).join('')
+    : '<span style="font-size:.8rem;color:var(--muted)">Tidak ada descriptor konten.</span>';
+
+  const platHtml = platforms.length
+    ? platforms.map(p => `<span class="meta-tag">${escHtml(p)}</span>`).join('')
+    : '—';
+
+  document.getElementById('modalGameTitle').textContent = game.title;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-rating-row">
+      ${ratingImgHtml}
+      <div class="modal-rating-info">
+        <div class="rating-label">Rating Usia</div>
+        <div class="rating-value">${escHtml(rl || 'Belum diklasifikasi')}</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="modal-section-label">Tentang Game</div>
+      <p class="modal-about">${escHtml(game.about || '—')}</p>
+    </div>
+
+    <div class="modal-meta-grid">
+      <div class="modal-meta-item">
+        <div class="m-label">Publisher</div>
+        <div class="m-value">${escHtml(game.publisher || '—')}</div>
+      </div>
+      <div class="modal-meta-item">
+        <div class="m-label">Tahun Rilis</div>
+        <div class="m-value">${escHtml(String(game.release_year || '—'))}</div>
+      </div>
+      <div class="modal-meta-item" style="grid-column:1/-1">
+        <div class="m-label">Platform</div>
+        <div class="m-value" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem">${platHtml}</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="modal-section-label">Deskriptor Konten</div>
+      <div class="modal-descriptor-row">${descHtml}</div>
+    </div>
+
+    <div class="modal-id">ID #${game.id}</div>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 
 function syncRatingGuide() {
   const val = document.getElementById('ratingFilter').value;
